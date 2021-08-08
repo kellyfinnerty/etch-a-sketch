@@ -1,7 +1,5 @@
-.div-item {
+.cell {
     background-color: aquamarine;
-    width: 29px;
-    height: 29px;
 }
 
 .div-hover {
@@ -15,9 +13,6 @@
     background-color: black;
     align-content: center;
     margin-left: 33%;
-
-    grid-template-rows: repeat(16, 30px);
-    grid-template-columns: repeat(16, 30px);
     padding: 1px;
 }
 

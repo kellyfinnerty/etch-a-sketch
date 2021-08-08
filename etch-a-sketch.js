@@ -1,21 +1,33 @@
-// initialize the 16 x 16 grid of divs
-function createGrid(){
-    //create container
-    const container = document.createElement('div');
+function createContainer(container){
+    container = document.createElement('div');
     container.setAttribute('id', 'grid-container');
 
     document.body.appendChild(container);
+}
 
-    // create divs
-    for(var i = 0; i < gridSize; i++){
-        for(var j = 0; j < gridSize; j++){
+
+function createCells(){
+    const container = document.querySelector('#grid-container');
+    var cellSize = gridSize / numCells;
+
+    container.style.gridTemplateRows = `repeat(${numCells}, ${cellSize}px)`;
+    container.style.gridTemplateColumns = `repeat(${numCells}, ${cellSize}px)`;
+
+    for(var i = 0; i < numCells; i++){
+        for(var j = 0; j < numCells; j++){
             const div = document.createElement('div');
-            div.setAttribute('class', 'div-item');
+            div.setAttribute('class', 'cell');
+            div.style.width = cellSize;
+            div.style.length = cellSize;
             container.appendChild(div);
+
         }
     }
+}
 
-    const divs = Array.from(document.querySelectorAll('.div-item'));
+
+function createHoverListeners(){
+    const divs = Array.from(document.querySelectorAll('.cell'));
     divs.forEach((div) => {
         div.addEventListener('mouseover', addHover)
     });
@@ -26,44 +38,71 @@ function addHover(e){
 }
 
 
-function createButtonListeners(){
+function clearGrid(e){
+    var body = e.target.parentNode;
+    var divs = Array.from(body.querySelectorAll('.div-hover'));
+
+    var inputNumCells = prompt("What grid size? From 0 to 100.");
+    if (!inputNumCells || isNaN(inputNumCells)) return
+
+    if(inputNumCells < 0 || inputNumCells > 100){
+        inputNumCells = prompt("Invalid grid size. What grid size? From 0 to 100.");
+    }
+
+    // if same size, clear and return
+    if (numCells === inputNumCells){
+        divs.forEach((div) => {
+            div.classList.remove('div-hover');
+        });
+        return;
+    }
+
+    // input validated so update numCells
+    numCells = inputNumCells;
+
+    removeCells();  //remove old size
+    createCells();
+    createHoverListeners();
+}
+
+function removeCells(){
+    //remove all grid elements
+    var cells = Array.from(document.body.querySelectorAll('.cell'));
+    
+    cells.forEach((cell) => {
+        cell.parentNode.removeChild(cell);
+    });
+}
+
+
+function createClearListeners(){
     var button = document.querySelector("button");
 
     button.addEventListener('click', clearGrid);
 
     button.addEventListener('mouseover', function(e){
-        e.target.style.color = 'pink';
+        e.target.style.backgroundColor = '#f0f5f1';
         e.target.style.border = '2.5px solid #555555';
     }); 
     
     button.addEventListener('mouseout', function(e){
-        e.target.style.color = 'black';
+        e.target.style.backgroundColor = 'white';
         e.target.style.border = '2px solid #555555';
     });
 }
 
-function clearGrid(e){
-    var body = e.target.parentNode;
-    var divs = Array.from(body.querySelectorAll('.div-hover'));
 
-    divs.forEach((div) => {
-        div.classList.remove('div-hover');
-    });
 
-    /*gridSize = prompt("What grid size? From 0 to 100.");
-    while(gridSize < 0 || gridSize > 100){
-        gridSize = prompt("What grid size? From 0 to 100.");
-    }
-    updateGridSize();*/
+var gridSize = 480;
+var numCells = 16;
+var container;
+
+// called when the webpage first opens
+function initializeGrid(){
+    createContainer();
+    createCells();
+    createHoverListeners();
+    createClearListeners();
 }
 
-function updateGridSize(){
-    //remove all grid elements
-
-}
-
-
-var gridSize = 16;
-
-createGrid();
-createButtonListeners();
+initializeGrid();
