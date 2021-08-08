@@ -2,7 +2,7 @@ function createContainer(container){
     container = document.createElement('div');
     container.setAttribute('id', 'grid-container');
 
-    document.body.appendChild(container);
+    document.body.querySelector("main").prepend(container);
 }
 
 
